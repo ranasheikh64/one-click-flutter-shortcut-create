@@ -146,9 +146,32 @@ add_sc "fl10n"    "flutter gen-l10n"                                            
 add_sc "ficon"    "flutter pub run flutter_launcher_icons"                                                 "Generate launcher icons"              "Create"
 add_sc "fsplash"  "flutter pub run flutter_native_splash:create"                                           "Generate native splash"               "Create"
 
+# ── Help ──
+add_sc "jronix"   "jronix"                                                                                 "Show all available shortcuts"          "Help"
+
 TOTAL=${#ALIASES[@]}
 MARKER_START="# ==== Flutter Shortcuts (auto-generated) ===="
 MARKER_END="# ==== Flutter Shortcuts END ===="
+
+jronix() {
+    clear
+    echo -e "\n  ${CYAN}╔══════════════════════════════════════════════════════╗${RESET}"
+    echo -e "  ${CYAN}║                WELCOME TO JRONIX                     ║${RESET}"
+    echo -e "  ${CYAN}║       Flutter Developer Shortcut Manager v1.1         ║${RESET}"
+    echo -e "  ${CYAN}╚══════════════════════════════════════════════════════╝${RESET}"
+    echo ""
+    
+    local last_cat=""
+    for i in "${!ALIASES[@]}"; do
+        if [ "${CATS[$i]}" != "$last_cat" ]; then
+            echo -e "\n  ${CYAN}[ ${CATS[$i]} ]${RESET}"
+            echo    "  ──────────────────────────────────────────────────"
+            last_cat="${CATS[$i]}"
+        fi
+        printf "  ${GREEN}%-12s${RESET} %s\n" "${ALIASES[$i]}" "${DESCS[$i]}"
+    done
+    echo -e "\n  ${YELLOW}Usage: Type any shortcut and press Enter!${RESET}\n"
+}
 
 # ─────────────────────────────────────────────
 #  DETECT RC FILE
@@ -175,7 +198,25 @@ write_shortcuts() {
     remove_block "$RC_FILE"
     echo -e "\n$MARKER_START" >> "$RC_FILE"
     echo "# Managed by flutter_shortcuts.sh — do not edit manually" >> "$RC_FILE"
+    
+    # Add jronix function to RC file
+    echo "jronix() {" >> "$RC_FILE"
+    echo "    clear" >> "$RC_FILE"
+    echo "    echo -e \"\\n  \${CYAN}╔══════════════════════════════════════════════════════╗\${RESET}\"" >> "$RC_FILE"
+    echo "    echo -e \"  \${CYAN}║                WELCOME TO JRONIX                     ║\${RESET}\"" >> "$RC_FILE"
+    echo "    echo -e \"  \${CYAN}║       Flutter Developer Shortcut Manager v1.1         ║\${RESET}\"" >> "$RC_FILE"
+    echo "    echo -e \"  \${CYAN}╚══════════════════════════════════════════════════════╝\${RESET}\"" >> "$RC_FILE"
+    echo "    echo \"\"" >> "$RC_FILE"
+    echo "    # [List generated shortcuts below]" >> "$RC_FILE"
     for i in "${!ALIASES[@]}"; do
+        [ "${ALIASES[$i]}" = "jronix" ] && continue
+        echo "    printf \"  \${GREEN}%-12s\${RESET} %s\\n\" \"${ALIASES[$i]}\" \"${DESCS[$i]}\"" >> "$RC_FILE"
+    done
+    echo "    echo -e \"\\n  \${YELLOW}Usage: Type any shortcut and press Enter!\\n\${RESET}\"" >> "$RC_FILE"
+    echo "}" >> "$RC_FILE"
+
+    for i in "${!ALIASES[@]}"; do
+        [ "${ALIASES[$i]}" = "jronix" ] && continue
         echo "alias ${ALIASES[$i]}='${CMDS[$i]}'" >> "$RC_FILE"
     done
     echo "$MARKER_END" >> "$RC_FILE"
@@ -222,7 +263,7 @@ while true; do
     CHOICE=${CHOICE:-1}
     case $CHOICE in
         1) install_all ;;
-        2) for i in "${!ALIASES[@]}"; do printf "  ${GREEN}%-12s${RESET} %s\n" "${ALIASES[$i]}" "${DESCS[$i]}"; done ;;
+        2) jronix; read -p "  Press Enter to continue..." ;;
         3) detect_rc; remove_block "$RC_FILE"; echo -e "  ${GREEN}✔${RESET} Removed.";;
         4) exit 0 ;;
     esac

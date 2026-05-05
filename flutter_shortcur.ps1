@@ -146,6 +146,9 @@ $Shortcuts = [ordered]@{
     "fl10n"    = @("flutter gen-l10n",                                                                   "Generate localizations",              "Create")
     "ficon"    = @("flutter pub run flutter_launcher_icons",                                             "Generate launcher icons",             "Create")
     "fsplash"  = @("flutter pub run flutter_native_splash:create",                                       "Generate native splash",              "Create")
+
+    # ── Jronix ──
+    "jronix"   = @("Show-Jronix",                                                                        "Show all available shortcuts",        "Help")
 }
 
 # ─────────────────────────────────────────────
@@ -246,7 +249,15 @@ function Print-Success($path, $count) {
 # ─────────────────────────────────────────────
 #  MENU ACTIONS
 # ─────────────────────────────────────────────
-function View-AllShortcuts {
+function Show-Jronix {
+    Clear-Host
+    Write-Host ""
+    Write-Host "  ╔══════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "  ║                WELCOME TO JRONIX                     ║" -ForegroundColor Cyan
+    Write-Host "  ║       Flutter Developer Shortcut Manager v1.1        ║" -ForegroundColor Cyan
+    Write-Host "  ╚══════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host ""
+    
     $lastCat = ""
     foreach ($alias in $Shortcuts.Keys) {
         $cmd  = $Shortcuts[$alias][0]; $desc = $Shortcuts[$alias][1]; $cat = $Shortcuts[$alias][2]
@@ -257,7 +268,14 @@ function View-AllShortcuts {
         }
         Write-Host "  " -NoNewline; Green ("{0,-12}" -f $alias); Write-Host "  $desc"
     }
-    Write-Host ""; Read-Host "  Press Enter to continue"
+    Write-Host ""
+    Write-Host "  Usage: Type any shortcut and press Enter!" -ForegroundColor Yellow
+    Write-Host ""
+}
+
+function View-AllShortcuts {
+    Show-Jronix
+    Read-Host "  Press Enter to continue"
 }
 
 function Install-All {
