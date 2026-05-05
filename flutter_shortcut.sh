@@ -154,6 +154,8 @@ MARKER_START="# ==== Flutter Shortcuts (auto-generated) ===="
 MARKER_END="# ==== Flutter Shortcuts END ===="
 
 jronix() {
+    # Accept arguments like --help but show the same help view
+    local arg="$1"
     clear
     echo -e "\n  ${CYAN}╔══════════════════════════════════════════════════════╗${RESET}"
     echo -e "  ${CYAN}║                WELCOME TO JRONIX                     ║${RESET}"
@@ -201,6 +203,8 @@ write_shortcuts() {
     
     # Add jronix function to RC file
     echo "jronix() {" >> "$RC_FILE"
+    echo "    # Accept arguments like --help" >> "$RC_FILE"
+    echo "    local arg=\"\$1\"" >> "$RC_FILE"
     echo "    clear" >> "$RC_FILE"
     echo "    echo -e \"\\n  \${CYAN}╔══════════════════════════════════════════════════════╗\${RESET}\"" >> "$RC_FILE"
     echo "    echo -e \"  \${CYAN}║                WELCOME TO JRONIX                     ║\${RESET}\"" >> "$RC_FILE"

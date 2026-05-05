@@ -250,6 +250,7 @@ function Print-Success($path, $count) {
 #  MENU ACTIONS
 # ─────────────────────────────────────────────
 function Show-Jronix {
+    param($args)
     Clear-Host
     Write-Host ""
     Write-Host "  ╔══════════════════════════════════════════════════════╗" -ForegroundColor Cyan
