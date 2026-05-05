@@ -228,18 +228,18 @@ function Build-ProfileBlock($selected) {
 
     # ── Define Remove-Jronix in Profile ──
     $lines += "function Remove-Jronix {"
-    $lines += "    `$confirm = Read-Host '  Are you sure you want to remove all Flutter shortcuts? (y/N)'"
-    $lines += "    if (`$confirm -eq 'y') {"
+    $lines += '    $confirm = Read-Host "  Are you sure you want to remove all Flutter shortcuts? (y/N)"'
+    $lines += '    if ($confirm -eq "y") {'
     $lines += "        `$p = `$PROFILE; `$s = '$MarkerStart'; `$e = '$MarkerEnd'"
-    $lines += "        if (Test-Path `$p) {"
-    $lines += "            `$c = Get-Content `$p -Raw; `$si = `$c.IndexOf(`$s); `$ei = `$c.IndexOf(`$e)"
-    $lines += "            if (`$si -ge 0 -and `$ei -ge 0) {"
-    $lines += "                `$final = `$c.Substring(0, `$si) + `$c.Substring(`$ei + `$e.Length).TrimStart(\"`n\")"
-    $lines += "                Set-Content -Path `$p -Value `$final -Encoding UTF8"
-    $lines += "                Write-Host '  ✔ Removed successfully. Please restart terminal.' -ForegroundColor Green"
-    $lines += "            }"
-    $lines += "        }"
-    $lines += "    }"
+    $lines += '        if (Test-Path $p) {'
+    $lines += '            $c = Get-Content $p -Raw; $si = $c.IndexOf($s); $ei = $c.IndexOf($e)'
+    $lines += '            if ($si -ge 0 -and $ei -ge 0) {'
+    $lines += '                $final = $c.Substring(0, $si) + $c.Substring($ei + $e.Length).TrimStart("`n")'
+    $lines += '                Set-Content -Path $p -Value $final -Encoding UTF8'
+    $lines += '                Write-Host "  ✔ Removed successfully. Please restart terminal." -ForegroundColor Green'
+    $lines += '            }'
+    $lines += '        }'
+    $lines += '    }'
     $lines += "}"
 
     foreach ($alias in $selected.Keys) {
