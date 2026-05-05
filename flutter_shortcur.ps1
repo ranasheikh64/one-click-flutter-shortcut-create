@@ -3,7 +3,9 @@
 # ║             Windows PowerShell Version                   ║
 # ╚══════════════════════════════════════════════════════════╝
 # Run: .\flutter_shortcuts.ps1
-# One-liner: iwr -useb https://raw.githubusercontent.com/USER/REPO/main/flutter_shortcur.ps1 | iex
+# One-liner: iwr -useb https://raw.githubusercontent.com/ranasheikh64/one-click-flutter-shortcut-create/main/flutter_shortcur.ps1 | iex
+
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 param(
     [switch]$InstallAll,

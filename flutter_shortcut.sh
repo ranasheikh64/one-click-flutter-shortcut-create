@@ -3,7 +3,7 @@
 # ║       Flutter Developer Shortcut Manager v1.1            ║
 # ║            macOS & Linux Terminal Version                ║
 # ╚══════════════════════════════════════════════════════════╝
-# One-liner: curl -fsSL https://raw.githubusercontent.com/USER/REPO/main/flutter_shortcut.sh | bash
+# One-liner: curl -fsSL https://raw.githubusercontent.com/ranasheikh64/one-click-flutter-shortcut-create/main/flutter_shortcut.sh | bash
 
 # ─────────────────────────────────────────────
 #  COLORS
