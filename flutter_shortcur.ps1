@@ -5,7 +5,13 @@
 # Run: .\flutter_shortcuts.ps1
 # One-liner: iwr -useb https://raw.githubusercontent.com/ranasheikh64/one-click-flutter-shortcut-create/main/flutter_shortcur.ps1 | iex
 
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+# Set encoding to UTF8 for better character support
+if ($Host.Name -eq "ConsoleHost") {
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    [Console]::InputEncoding  = [System.Text.Encoding]::UTF8
+}
+$OutputEncoding = [System.Text.Encoding]::UTF8
+if (Get-Command chcp -ErrorAction SilentlyContinue) { chcp 65001 | Out-Null }
 
 param(
     [switch]$InstallAll,
@@ -272,14 +278,17 @@ function Write-ToProfile($selected) {
 
 function Load-IntoSession($selected) {
     # Export core functions to global scope
-    $global:Function:Show-Jronix = Get-Command Show-Jronix -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ScriptBlock
-    $global:Function:Remove-Jronix = { Remove-AllShortcuts }.GetScriptBlock()
+    $jronixCmd = Get-Command Show-Jronix -ErrorAction SilentlyContinue
+    if ($jronixCmd) {
+        Set-Item -Path "Function:global:Show-Jronix" -Value $jronixCmd.ScriptBlock
+    }
+    Set-Item -Path "Function:global:Remove-Jronix" -Value ({ Remove-AllShortcuts }.GetScriptBlock())
 
     foreach ($alias in $selected.Keys) {
         $cmd = $selected[$alias][0]
         # Define in Global scope so it persists after script exits
         $funcBody = [scriptblock]::Create("$cmd `$args")
-        Set-Item -Path "Global:Function:$alias" -Value $funcBody
+        Set-Item -Path "Function:global:$alias" -Value $funcBody
     }
 }
 
