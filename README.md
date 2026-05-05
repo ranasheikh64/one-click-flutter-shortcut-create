@@ -24,7 +24,8 @@ The script adds aliases for almost every Flutter and Dart command, categorized f
 
 | Shortcut | Command | Description |
 | :--- | :--- | :--- |
-| `jronix` / `jronix --help` | `(Help)` | **Show all shortcuts with a beautiful design** |
+| `jronix` | `(Help)` | **Show all shortcuts with a beautiful design** |
+| `juninstall` | `(Uninstall)` | **Remove all flutter shortcuts from your system** |
 | `fc` | `flutter clean` | Clean build artifacts |
 | `fpg` | `flutter pub get` | Get dependencies |
 | `fcp` | `flutter clean; flutter pub get` | Clean + Get dependencies |

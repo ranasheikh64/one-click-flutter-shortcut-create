@@ -147,7 +147,8 @@ add_sc "ficon"    "flutter pub run flutter_launcher_icons"                      
 add_sc "fsplash"  "flutter pub run flutter_native_splash:create"                                           "Generate native splash"               "Create"
 
 # ── Help ──
-add_sc "jronix"   "jronix"                                                                                 "Show all available shortcuts"          "Help"
+add_sc "jronix"     "jronix"                                                                                 "Show all available shortcuts"          "Help"
+add_sc "juninstall" "juninstall"                                                                             "Uninstall all flutter shortcuts"       "Help"
 
 TOTAL=${#ALIASES[@]}
 MARKER_START="# ==== Flutter Shortcuts (auto-generated) ===="
@@ -217,6 +218,16 @@ write_shortcuts() {
         echo "    printf \"  \${GREEN}%-12s\${RESET} %s\\n\" \"${ALIASES[$i]}\" \"${DESCS[$i]}\"" >> "$RC_FILE"
     done
     echo "    echo -e \"\\n  \${YELLOW}Usage: Type any shortcut and press Enter!\\n\${RESET}\"" >> "$RC_FILE"
+    echo "}" >> "$RC_FILE"
+
+    # Add juninstall function to RC file
+    echo "juninstall() {" >> "$RC_FILE"
+    echo "    read -p \"  Are you sure you want to remove all Flutter shortcuts? (y/N): \" CONFIRM" >> "$RC_FILE"
+    echo "    if [[ \"\$CONFIRM\" == \"y\" || \"\$CONFIRM\" == \"Y\" ]]; then" >> "$RC_FILE"
+    echo "        RC_PATH=\"$RC_FILE\"" >> "$RC_FILE"
+    echo "        sed -i.bak \"/$MARKER_START/,/$MARKER_END/d\" \"\$RC_PATH\" && rm \"\${RC_PATH}.bak\"" >> "$RC_FILE"
+    echo "        echo -e \"  \${GREEN}✔\${RESET} Shortcuts removed. Please restart your terminal.\"" >> "$RC_FILE"
+    echo "    fi" >> "$RC_FILE"
     echo "}" >> "$RC_FILE"
 
     for i in "${!ALIASES[@]}"; do

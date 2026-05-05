@@ -148,7 +148,8 @@ $Shortcuts = [ordered]@{
     "fsplash"  = @("flutter pub run flutter_native_splash:create",                                       "Generate native splash",              "Create")
 
     # ── Jronix ──
-    "jronix"   = @("Show-Jronix",                                                                        "Show all available shortcuts",        "Help")
+    "jronix"     = @("Show-Jronix",                                                                        "Show all available shortcuts",        "Help")
+    "juninstall" = @("Remove-Jronix",                                                                      "Uninstall all flutter shortcuts",     "Help")
 }
 
 # ─────────────────────────────────────────────
@@ -189,11 +190,54 @@ function Build-ProfileBlock($selected) {
     $lines = @($MarkerStart)
     $lines += "# Managed by flutter_shortcuts.ps1 - do not edit manually"
     $lines += ""
+    
+    # ── Define Show-Jronix in Profile ──
+    $lines += "function Show-Jronix {"
+    $lines += "    param(`$args)"
+    $lines += "    Clear-Host"
+    $lines += "    Write-Host ''"
+    $lines += "    Write-Host '  ╔══════════════════════════════════════════════════════╗' -ForegroundColor Cyan"
+    $lines += "    Write-Host '  ║                WELCOME TO JRONIX                     ║' -ForegroundColor Cyan"
+    $lines += "    Write-Host '  ║       Flutter Developer Shortcut Manager v1.1        ║' -ForegroundColor Cyan"
+    $lines += "    Write-Host '  ╚══════════════════════════════════════════════════════╝' -ForegroundColor Cyan"
+    
+    $lastCat = ""
     foreach ($alias in $selected.Keys) {
-        $cmd  = $selected[$alias][0]
+        if ($alias -eq "jronix" -or $alias -eq "juninstall") { continue }
         $desc = $selected[$alias][1]
         $cat  = $selected[$alias][2]
-        $lines += "# $cat : $desc"
+        if ($cat -ne $lastCat) {
+            $lines += "    Write-Host ''; Write-Host '  [ $cat ]' -ForegroundColor Cyan"
+            $lines += "    Write-Host ('  ' + '─' * 55) -ForegroundColor DarkGray"
+            $lastCat = $cat
+        }
+        $lines += "    Write-Host '  ' -NoNewline; Write-Host ('{0,-12}' -f '$alias') -ForegroundColor Green; Write-Host '  $desc'"
+    }
+    $lines += "    Write-Host ''; Write-Host '  [ Help ]' -ForegroundColor Cyan"
+    $lines += "    Write-Host ('  ' + '─' * 55) -ForegroundColor DarkGray"
+    $lines += "    Write-Host '  ' -NoNewline; Write-Host ('{0,-12}' -f 'jronix') -ForegroundColor Green; Write-Host '  Show all available shortcuts'"
+    $lines += "    Write-Host '  ' -NoNewline; Write-Host ('{0,-12}' -f 'juninstall') -ForegroundColor Green; Write-Host '  Uninstall all flutter shortcuts'"
+    $lines += "    Write-Host ''; Write-Host '  Usage: Type any shortcut and press Enter!' -ForegroundColor Yellow; Write-Host ''"
+    $lines += "}"
+
+    # ── Define Remove-Jronix in Profile ──
+    $lines += "function Remove-Jronix {"
+    $lines += "    `$confirm = Read-Host '  Are you sure you want to remove all Flutter shortcuts? (y/N)'"
+    $lines += "    if (`$confirm -eq 'y') {"
+    $lines += "        `$p = `$PROFILE; `$s = '$MarkerStart'; `$e = '$MarkerEnd'"
+    $lines += "        if (Test-Path `$p) {"
+    $lines += "            `$c = Get-Content `$p -Raw; `$si = `$c.IndexOf(`$s); `$ei = `$c.IndexOf(`$e)"
+    $lines += "            if (`$si -ge 0 -and `$ei -ge 0) {"
+    $lines += "                `$final = `$c.Substring(0, `$si) + `$c.Substring(`$ei + `$e.Length).TrimStart(\"`n\")"
+    $lines += "                Set-Content -Path `$p -Value `$final -Encoding UTF8"
+    $lines += "                Write-Host '  ✔ Removed successfully. Please restart terminal.' -ForegroundColor Green"
+    $lines += "            }"
+    $lines += "        }"
+    $lines += "    }"
+    $lines += "}"
+
+    foreach ($alias in $selected.Keys) {
+        $cmd  = $selected[$alias][0]
         $lines += "function $alias { $cmd `$args }"
     }
     $lines += ""
@@ -227,6 +271,10 @@ function Write-ToProfile($selected) {
 }
 
 function Load-IntoSession($selected) {
+    # Export core functions to global scope
+    $global:Function:Show-Jronix = Get-Command Show-Jronix -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ScriptBlock
+    $global:Function:Remove-Jronix = { Remove-AllShortcuts }.GetScriptBlock()
+
     foreach ($alias in $selected.Keys) {
         $cmd = $selected[$alias][0]
         # Define in Global scope so it persists after script exits

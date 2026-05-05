@@ -42,6 +42,7 @@ call :ADD_SC "fver"     "flutter --version"                           "Show vers
 
 call :ADD_SC "gfc"      "git fetch && flutter clean && flutter pub get" "Git fetch+clean+get"
 call :ADD_SC "gpc"      "git pull && flutter clean && flutter pub get"  "Git pull+clean+get"
+call :ADD_SC "juninstall" "echo Please close terminal or run: doskey /reinstall" "Uninstall info"
 
 goto :MAIN
 
@@ -68,12 +69,23 @@ for /l %%i in (1,1,!COUNT!) do (
 )
 echo.
 echo   %CYAN%1.%RESET% Install for this session
-echo   %CYAN%2.%RESET% Exit
+echo   %CYAN%2.%RESET% Remove shortcuts from this session
+echo   %CYAN%3.%RESET% Exit
 echo.
-set /p CHOICE="  Choice [1]: "
+set /p CHOICE="  Enter choice [1]: "
 if "%CHOICE%"=="" set CHOICE=1
 if "%CHOICE%"=="1" goto :INSTALL
-if "%CHOICE%"=="2" exit /b
+if "%CHOICE%"=="2" goto :UNINSTALL
+if "%CHOICE%"=="3" exit /b
+
+:UNINSTALL
+for /l %%i in (1,1,!COUNT!) do (
+    doskey !ALIAS[%%i]!=
+)
+echo.
+echo  %GREEN%✔ Shortcuts removed from this session!%RESET%
+pause
+goto :MENU
 
 :INSTALL
 for /l %%i in (1,1,!COUNT!) do (
