@@ -226,8 +226,9 @@ function Write-ToProfile($selected) {
 function Load-IntoSession($selected) {
     foreach ($alias in $selected.Keys) {
         $cmd = $selected[$alias][0]
-        $sb = [scriptblock]::Create("$cmd `$args")
-        Set-Item -Path "Function:$alias" -Value $sb
+        # Define in Global scope so it persists after script exits
+        $funcBody = [scriptblock]::Create("$cmd `$args")
+        Set-Item -Path "Global:Function:$alias" -Value $funcBody
     }
 }
 
